@@ -11,6 +11,18 @@ data:
       routes:
         - match:
             - receiver: "dump"
+              kind: "^Pod|Deployment|KyligenceService$"
     receivers:
       - name: "dump"
-        stdout: {}
+        stdout:
+          layout:
+            message: "{{ .Message }}"
+            reason: "{{ .Reason }}"
+            type: "{{ .Type }}"
+            count: "{{ .Count }}"
+            kind: "{{ .InvolvedObject.Kind }}"
+            name: "{{ .InvolvedObject.Name }}"
+            namespace: "{{ .Namespace }}"
+            component: "{{ .Source.Component }}"
+            host: "{{ .Source.Host }}"
+            labels: "{{ toJson .InvolvedObject.Labels }}"

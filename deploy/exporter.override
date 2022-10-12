@@ -1,0 +1,28 @@
+config:
+  logLevel: error
+  logFormat: json
+  route:
+    routes:
+    - match:
+      - receiver: "dump"
+        kind: "^Pod|Deployment|KyligenceService$"
+  receivers:
+    - name: "dump"
+      stdout:
+        layout:
+          message: "{{ .Message }}"
+          reason: "{{ .Reason }}"
+          type: "{{ .Type }}"
+          count: "{{ .Count }}"
+          kind: "{{ .InvolvedObject.Kind }}"
+          name: "{{ .InvolvedObject.Name }}"
+          namespace: "{{ .Namespace }}"
+          component: "{{ .Source.Component }}"
+          host: "{{ .Source.Host }}"
+          labels: "{{ toJson .InvolvedObject.Labels }}"
+
+serviceAccount:
+  create: true
+  name: "event-exporter"
+  automountServiceAccountToken: true
+  annotations: {}
